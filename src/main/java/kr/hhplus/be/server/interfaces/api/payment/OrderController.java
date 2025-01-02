@@ -22,7 +22,7 @@ public class OrderController {
         List<OrderProductReponse> orderProductReponses = new ArrayList<>();
         orderProductReponses.add(orderProductReponse);
         orderProductReponses.add(orderProductReponse2);
-        OrderResponseBody orderResponseBody = new OrderResponseBody(1L, 1L, orderProductReponses, 2000L);
+        OrderResponseBody orderResponseBody = new OrderResponseBody(1L, 1L, orderProductReponses, 1L, 2000L);
         return ResponseEntity.ok(orderResponseBody);
     }
 }

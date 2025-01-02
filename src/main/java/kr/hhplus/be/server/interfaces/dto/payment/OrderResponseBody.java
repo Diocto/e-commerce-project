@@ -6,6 +6,7 @@ public record OrderResponseBody(
         Long orderId,
         Long userId,
         List<OrderProductReponse> orderProductList,
+        Long userCouponId,
         Long totalAmount
 ) {
 
