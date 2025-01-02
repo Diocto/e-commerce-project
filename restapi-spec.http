@@ -1,0 +1,67 @@
+### 잔액 충전 API
+POST http://localhost:8080/points
+Content-Type: application/json
+
+{
+  "userId": 0,
+  "point": 0
+}
+
+<> 2025-01-03T005434.200.json
+
+### 잔액 조회 API
+GET http://localhost:8080/points
+Content-Type: application/json
+
+{
+  "userId": 0,
+  "point": 0
+}
+
+<> 2025-01-03T005430.200.json
+
+### 상품 조회 API
+@product_id = 1
+GET http://localhost:8080/products/{{product_id}}
+
+<> 2025-01-03T005428.200.json
+
+### 인기상품 조회 API
+GET http://localhost:8080/products/popular
+
+<> 2025-01-03T005425.200.json
+
+### 주문서 생성 API
+POST http://localhost:8080/orders
+Content-Type: application/json
+
+{
+  "userId": 0,
+  "orderProductRequests": [],
+  "userCouponId": 0,
+  "totalAmount": 0
+}
+
+<> 2025-01-03T005421.200.json
+
+### 주문서 결제 처리 API
+@order_id = variable value
+POST http://localhost:8080/payments/{{order_id}}
+
+
+### 선착순 쿠폰 발급 요청 API
+POST http://localhost:8080/coupons
+Content-Type: application/json
+
+{
+  "userId": 0,
+  "couponId": 0
+}
+
+<> 2025-01-03T005335.200.json
+
+### 선착순 쿠폰 발금 요청 조회 API
+@coupon_create_request_id = 1
+GET http://localhost:8080/coupons/{{coupon_create_request_id}}
+
+<> 2025-01-03T005407.200.json
