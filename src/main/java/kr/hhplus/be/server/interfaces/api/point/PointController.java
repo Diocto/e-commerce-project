@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
-@RequestMapping("/point")
+@RequestMapping("/points")
 public class PointController {
     @PostMapping()
     public ResponseEntity<PointChargeResponseBody> chargePoint(@RequestBody PointChargeRequestBody requestBody) {
