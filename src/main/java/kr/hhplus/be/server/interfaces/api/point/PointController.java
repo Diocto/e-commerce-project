@@ -1,22 +1,41 @@
 package kr.hhplus.be.server.interfaces.api.point;
 
-import kr.hhplus.be.server.interfaces.dto.point.PointChargeRequestBody;
-import kr.hhplus.be.server.interfaces.dto.point.PointChargeResponseBody;
-import kr.hhplus.be.server.interfaces.dto.point.PointViewResponseBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping("/points")
 public class PointController {
+    public static class Request {
+        public record PointCharge(
+                Long userId,
+                Long point
+        ) {}
+
+        public record PointView(
+                Long userId
+        ) {}
+    }
+
+    public static class Response {
+        public record PointCharge(
+                Long totalPoint
+        ) {
+        }
+
+        public record PointView(
+                Long point
+        ) {}
+    }
+
     @PostMapping()
-    public ResponseEntity<PointChargeResponseBody> chargePoint(@RequestBody PointChargeRequestBody requestBody) {
-        return ResponseEntity.ok(new PointChargeResponseBody(1000L));
+    public ResponseEntity<Response.PointCharge> chargePoint(@RequestBody Request.PointCharge requestBody) {
+        return ResponseEntity.ok(new Response.PointCharge(1000L));
     }
 
     @GetMapping()
-    public ResponseEntity<PointViewResponseBody> getPoint(@RequestBody PointViewResponseBody requestBody) {
-        return ResponseEntity.ok(new PointViewResponseBody(1000L));
+    public ResponseEntity<Response.PointView> getPoint(@RequestBody Request.PointView requestBody) {
+        return ResponseEntity.ok(new Response.PointView(1000L));
     }
 
 }
