@@ -16,20 +16,16 @@ public class CouponController {
         ){
         }
     }
-
     public static class Response {
 
         public record CouponCreate(
                 Long couponCreateRequestId
-        ){
-
-        }
+        ){}
 
         public record CouponCreateView(
                 String couponCreateRequestStatus,
                 Optional<Long> createdUserCouponId
-        ){
-        }
+        ){}
     }
 
     @PostMapping()
