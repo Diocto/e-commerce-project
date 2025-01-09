@@ -2,14 +2,12 @@ package kr.hhplus.be.server.infrastructure.balance;
 
 import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.IBalanceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
 public class BalanceRepositoryImpl implements IBalanceRepository{
-    @Autowired
     private final BalanceJpaRepository balanceJpaRepository;
 
     public BalanceRepositoryImpl(BalanceJpaRepository balanceJpaRepository) {

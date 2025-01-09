@@ -9,7 +9,7 @@ public class BalanceService {
     @Autowired
     private final IBalanceRepository balanceRepository;
 
-    BalanceService(@Qualifier("balanceRepositoryImpl") IBalanceRepository balanceRepositoryImpl) {
+    public BalanceService(@Qualifier("balanceRepositoryImpl") IBalanceRepository balanceRepositoryImpl) {
         this.balanceRepository = balanceRepositoryImpl;
     }
 
