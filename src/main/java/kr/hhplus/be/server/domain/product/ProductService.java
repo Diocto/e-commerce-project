@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.product;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +13,6 @@ public class ProductService {
     }
 
     public List<Product> getProducts(Integer page, Integer size) {
-        return productRepositoryImpl.getProducts(page, size);
+        return productRepositoryImpl.getPopularProducts(page, size);
     }
 }

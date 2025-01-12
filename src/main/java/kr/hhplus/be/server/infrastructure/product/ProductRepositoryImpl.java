@@ -16,8 +16,13 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
-    public List<Product> getProducts(Integer page, Integer size) {
+    public List<Product> getPopularProducts(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return productJpaRepository.findAll(pageRequest).getContent();
+    }
+
+    @Override
+    public List<Product> getProducts(List<Long> productIds) {
+        return productJpaRepository.findAllById(productIds);
     }
 }
