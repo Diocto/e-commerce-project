@@ -1,21 +1,21 @@
 ### 잔액 충전 API
-POST http://localhost:8080/points
+POST http://localhost:8080/balances
 Content-Type: application/json
 
 {
   "userId": 0,
-  "point": 0
+  "balance": 0
 }
 
 <> 2025-01-03T005434.200.json
 
 ### 잔액 조회 API
-GET http://localhost:8080/points
+GET http://localhost:8080/balances
 Content-Type: application/json
 
 {
   "userId": 0,
-  "point": 0
+  "balance": 0
 }
 
 <> 2025-01-03T005430.200.json
