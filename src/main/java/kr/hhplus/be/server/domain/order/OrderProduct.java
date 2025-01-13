@@ -22,10 +22,10 @@ public class OrderProduct {
     private Long orderId;
     private Long productId;
     private String productName;
-    private Integer quantity;
+    private Long quantity;
     private Long price;
 
-    public static List<OrderProduct> create(Long orderId, Product product, Integer quantity) {
+    public static List<OrderProduct> create(Long orderId, Product product, Long quantity) {
         return List.of(OrderProduct.builder()
                 .orderId(orderId)
                 .productId(product.getId())

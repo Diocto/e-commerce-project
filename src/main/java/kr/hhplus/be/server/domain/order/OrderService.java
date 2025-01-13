@@ -17,9 +17,9 @@ public class OrderService {
         @Builder
         public static class ProductCommand{
             private final Long id;
-            private final Integer quantity;
+            private final Long quantity;
 
-            public ProductCommand(Long id, Integer quantity) {
+            public ProductCommand(Long id, Long quantity) {
                 this.id = id;
                 this.quantity = quantity;
             }
@@ -52,7 +52,7 @@ public class OrderService {
             throw new IllegalArgumentException("Invalid product id");
         }
 
-        List<Pair<Product, Integer>> productQuantityList = command.products.stream()
+        List<Pair<Product, Long>> productQuantityList = command.products.stream()
                 .map(productCommand -> {
                     Product product = products.stream()
                             .filter(p -> p.getId().equals(productCommand.id))

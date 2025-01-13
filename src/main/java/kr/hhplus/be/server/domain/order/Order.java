@@ -25,12 +25,15 @@ public class Order {
     private OrderStatus status = OrderStatus.PENDING;
     @OneToMany
     private List<OrderProduct> orderProducts;
+    private Long amount;
+    private Long discountAmount;
+    private Long userCouponId;
 
     public enum OrderStatus{
         PENDING, PAYED, DELIVERED, CANCELED, REFUNDED, COMPLETED
     }
 
-    public static Order create(Long userId, List<Pair<Product, Integer>> product_quantity_list, Coupon coupon) {
+    public static Order create(Long userId, List<Pair<Product, Long>> product_quantity_list, Coupon coupon) {
         Order order = new Order();
         order.userId = userId;
         order.orderProducts = product_quantity_list.stream()

@@ -10,5 +10,5 @@ public class Coupon {
     @GeneratedValue
     private Long id;
     private String name;
-    private Integer discountPercent;
+    private Long discountPercent;
 }

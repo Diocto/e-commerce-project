@@ -13,7 +13,7 @@ public class OrderUseCase {
         this.orderService = orderService;
     }
 
-    public Order createOrder(Long userId, List<Pair<Long, Integer>> productIdQuantityPair) {
+    public Order createOrder(Long userId, List<Pair<Long, Long>> productIdQuantityPair, Long userCouponId) {
         return orderService.createOrder(
                 OrderService.Command.CreateOrderCommand.builder()
                         .userId(userId)

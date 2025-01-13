@@ -2,6 +2,7 @@ package kr.hhplus.be.server.interfaces.api.payment;
 
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderUseCase;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,12 +59,22 @@ public class OrderController {
 
     @PostMapping()
     public ResponseEntity<Response.Order> createOrder(@RequestBody Request.OrderBody requestBody) {
-        Response.OrderProduct orderProductReponse = new Response.OrderProduct(1L, 1000L, 1L);
-        Response.OrderProduct orderProductReponse2 = new Response.OrderProduct(2L, 1000L, 1L);
-        List<Response.OrderProduct> orderProductReponses = new ArrayList<>();
-        orderProductReponses.add(orderProductReponse);
-        orderProductReponses.add(orderProductReponse2);
-        Response.Order orderResponseBody = new Response.Order(1L, 1L, orderProductReponses, 1L, 2000L, 0L);
-        return ResponseEntity.ok(orderResponseBody);
+        List<Pair<Long, Long>> productIdQuantityPair = new ArrayList<>();
+        for (Request.OrderProduct orderProductRequest : requestBody.orderProductRequests) {
+            productIdQuantityPair.add(Pair.of(orderProductRequest.productId, orderProductRequest.quantity));
+        }
+        Order order = orderUseCase.createOrder(requestBody.userId, productIdQuantityPair, requestBody.userCouponId);
+        return ResponseEntity.ok(new Response.Order(
+                order.getId(),
+                order.getUserId(),
+                order.getOrderProducts().stream().map(orderProduct -> new Response.OrderProduct(
+                        orderProduct.getProductId(),
+                        orderProduct.getPrice(),
+                        orderProduct.getQuantity()
+                )).toList(),
+                order.getUserCouponId(),
+                order.getOrderProducts().stream().mapToLong(orderProduct -> orderProduct.getPrice() * orderProduct.getQuantity()).sum(),
+                order.getDiscountAmount()
+        ));
     }
 }
