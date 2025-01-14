@@ -1,12 +1,10 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.util.Pair;
@@ -14,9 +12,12 @@ import org.springframework.data.util.Pair;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Math.round;
+
 @Entity
 @Getter
 @Setter
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue
@@ -33,16 +34,23 @@ public class Order {
         PENDING, PAYED, DELIVERED, CANCELED, REFUNDED, COMPLETED
     }
 
-    public static Order create(Long userId, List<Pair<Product, Long>> product_quantity_list, Coupon coupon) {
+    public static Order create(Long userId, List<Pair<Product, Long>> product_quantity_list, Coupon coupon, UserCoupon userCoupon) {
+        Long discountPercent = 0L;
+        if (coupon != null){
+            discountPercent = coupon.getDiscountPercent();
+        }
         Order order = new Order();
         order.userId = userId;
         order.orderProducts = product_quantity_list.stream()
                 .map(pair -> OrderProduct.create(order.getId(), pair.getFirst(), pair.getSecond()))
                 .flatMap(List::stream)
                 .toList();
-        order.amount = product_quantity_list.stream().mapToLong(
+        Long totalAmount = product_quantity_list.stream().mapToLong(
                 productLongPair -> productLongPair.getFirst().getPrice() * productLongPair.getSecond()
         ).sum();
+        order.amount = round(totalAmount * (1 - discountPercent * 0.01));
+        order.discountAmount = round(totalAmount * discountPercent * 0.01);
+        order.userCouponId = userCoupon.getId();
         return order;
     }
 }

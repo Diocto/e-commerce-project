@@ -2,7 +2,6 @@ package kr.hhplus.be.server.unittest.domain.balance;
 
 import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.BalanceService;
-import kr.hhplus.be.server.domain.balance.IBalanceRepository;
 import kr.hhplus.be.server.infrastructure.balance.BalanceRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class BalanceServiceTest {

@@ -2,10 +2,13 @@ package kr.hhplus.be.server.domain.order;
 
 
 import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.IUserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +29,19 @@ public class OrderService {
         }
 
         @Builder
+        @AllArgsConstructor
         public static class CreateOrderCommand {
             private final Long userId;
             private final List<ProductCommand> products;
-            public CreateOrderCommand(Long userId, List<ProductCommand> products) {
-                this.userId = userId;
-                this.products = products;
-            }
+            private final Coupon coupon;
+            private final UserCoupon userCoupon;
+
         }
     }
     private final IOrderRepository orderRepository;
     private final IProductRepository productRepository;
 
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository) {
+    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IUserCouponRepository userCouponRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
     }
@@ -47,7 +50,7 @@ public class OrderService {
         /// 요청한 상품 정보를 조회한다.
         List<Product> products = productRepository.getProducts(command.products.stream().map(productCommand -> productCommand.id).toList());
 
-        /// 요청한 상품 정보 중, 존재하지 않는 상품이 있는지 확인한다
+        /// 요청한 상품 정보 중, 존재하지 않는 상품이 있는지 확인한다 -> Product 도메인으로 이동해야 할듯?
         if(products.size() != command.products.size()){
             throw new IllegalArgumentException("Invalid product id");
         }
@@ -62,15 +65,7 @@ public class OrderService {
                 })
                 .toList();
 
-        /// TODO: 쿠폰 정보가 있을 경우, 해당 쿠폰을 조회한다.
-        /// UserCoupon userCoupon = userCouponRepository.findById(command.userCouponId).orElseThrow(() -> new IllegalArgumentException("Invalid coupon id"));
-        UserCoupon userCoupon = null;
-
-        /// 정상적인 쿠폰이라면, Coupon 을 전달한다.
-        /// Coupon coupon = userCoupon.isValid() ? userCoupon.getCoupon() : null;
-        Coupon coupon = null;
-
-        Order order = Order.create(command.userId, productQuantityList, coupon);
+        Order order = Order.create(command.userId, productQuantityList, command.coupon, command.userCoupon);
         orderRepository.save(order);
 
         return order;
