@@ -28,4 +28,9 @@ public class BalanceRepositoryImpl implements IBalanceRepository{
     public void deleteById(Long id) {
         balanceJpaRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<Balance> findByIdWithLock(Long id) {
+        return balanceJpaRepository.findByIdWithLock(id);
+    }
 }

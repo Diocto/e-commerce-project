@@ -25,10 +25,8 @@ public class OrderUseCase {
 
     public Order createOrder(Long userId, List<Pair<Long, Long>> productIdQuantityPair, Long userCouponId) {
         UserCoupon userCoupon = null;
-        Coupon coupon = null;
         if (userCouponId != null) {
-            userCoupon = couponService.getUserCoupon(userCouponId).orElseThrow();
-            coupon = couponService.getCoupon(userCoupon.getCouponId()).orElseThrow();
+            userCoupon = couponService.getUserCoupon(userCouponId).orElseThrow(() -> new IllegalArgumentException("Invalid user coupon id"));
         }
         return orderService.createOrder(
                 OrderService.Command.CreateOrderCommand.builder()
@@ -40,7 +38,6 @@ public class OrderUseCase {
                                         .build())
                                 .toList())
                         .userCoupon(userCoupon)
-                        .coupon(coupon)
                         .build()
         );
     }

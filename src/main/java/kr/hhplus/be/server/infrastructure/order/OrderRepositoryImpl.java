@@ -27,4 +27,9 @@ public class OrderRepositoryImpl implements IOrderRepository {
     public Optional<Order> findById(Long id) {
         return productJpaRepository.findById(id);
     }
+
+    @Override
+    public Optional<Order> findByIdWithLock(Long orderId) {
+        return productJpaRepository.findByIdWithLock(orderId);
+    }
 }

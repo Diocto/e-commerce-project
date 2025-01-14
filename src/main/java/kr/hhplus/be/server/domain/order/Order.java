@@ -34,10 +34,10 @@ public class Order {
         PENDING, PAYED, DELIVERED, CANCELED, REFUNDED, COMPLETED
     }
 
-    public static Order create(Long userId, List<Pair<Product, Long>> product_quantity_list, Coupon coupon, UserCoupon userCoupon) {
+    public static Order create(Long userId, List<Pair<Product, Long>> product_quantity_list, UserCoupon userCoupon) {
         Long discountPercent = 0L;
-        if (coupon != null){
-            discountPercent = coupon.getDiscountPercent();
+        if (userCoupon != null){
+            discountPercent = userCoupon.getCoupon().getDiscountPercent();
         }
         Order order = new Order();
         order.userId = userId;
@@ -52,5 +52,9 @@ public class Order {
         order.discountAmount = round(totalAmount * discountPercent * 0.01);
         order.userCouponId = userCoupon.getId();
         return order;
+    }
+
+    public void complete(){
+        this.status = OrderStatus.COMPLETED;
     }
 }

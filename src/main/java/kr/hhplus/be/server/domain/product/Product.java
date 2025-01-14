@@ -21,4 +21,14 @@ public class Product {
     private String description;
     private Long price;
     private Long stock;
+
+    public void decreaseStock(Long quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("재고를 감소할 수량이 0보다 작습니다");
+        }
+        if (stock < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다");
+        }
+        stock -= quantity;
+    }
 }

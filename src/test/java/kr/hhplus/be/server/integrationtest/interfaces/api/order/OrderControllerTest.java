@@ -38,13 +38,14 @@ public class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
+        /// TODO: 셋업한 아이템의 ID 를 테스트시 전달 가능해야함. 또는 고정 ID 를 부여할것
         productRepository.save(Product.builder().name("product1").price(1000L).build());
         productRepository.save(Product.builder().name("product2").price(2000L).build());
         productRepository.save(Product.builder().name("product3").price(3000L).build());
 
         Coupon coupon = Coupon.builder().discountPercent(50L).name("testCoupon").build();
         couponRepository.save(coupon);
-        UserCoupon userCoupon = UserCoupon.builder().couponId(1L).userId(1L).build();
+        UserCoupon userCoupon = UserCoupon.builder().coupon(coupon).userId(1L).build();
         userCouponRepository.save(userCoupon);
     }
 

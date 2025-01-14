@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class OrderService {
-    public static class Command{
+public class OrderService {public static class Command{
         @Builder
         public static class ProductCommand{
             private final Long id;
@@ -47,10 +46,9 @@ public class OrderService {
     }
 
     public Order createOrder(Command.CreateOrderCommand command) {
-        /// 요청한 상품 정보를 조회한다.
+        /// TODO: Product 도메인으로 이동시켜 줄 것.
         List<Product> products = productRepository.getProducts(command.products.stream().map(productCommand -> productCommand.id).toList());
 
-        /// 요청한 상품 정보 중, 존재하지 않는 상품이 있는지 확인한다 -> Product 도메인으로 이동해야 할듯?
         if(products.size() != command.products.size()){
             throw new IllegalArgumentException("Invalid product id");
         }
@@ -65,9 +63,19 @@ public class OrderService {
                 })
                 .toList();
 
-        Order order = Order.create(command.userId, productQuantityList, command.coupon, command.userCoupon);
+        Order order = Order.create(command.userId, productQuantityList, command.userCoupon);
         orderRepository.save(order);
 
         return order;
     }
+
+    public Order getOrder(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Invalid order id"));
+    }
+
+    public void completeOrder(Order order) {
+        order.complete();
+        orderRepository.save(order);
+    }
+
 }
