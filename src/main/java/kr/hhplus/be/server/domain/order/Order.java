@@ -26,7 +26,7 @@ public class Order {
     @OneToMany
     private List<OrderProduct> orderProducts;
     private Long amount;
-    private Long discountAmount;
+    private Long discountAmount = 0L;
     private Long userCouponId;
 
     public enum OrderStatus{
@@ -40,6 +40,9 @@ public class Order {
                 .map(pair -> OrderProduct.create(order.getId(), pair.getFirst(), pair.getSecond()))
                 .flatMap(List::stream)
                 .toList();
+        order.amount = product_quantity_list.stream().mapToLong(
+                productLongPair -> productLongPair.getFirst().getPrice() * productLongPair.getSecond()
+        ).sum();
         return order;
     }
 }

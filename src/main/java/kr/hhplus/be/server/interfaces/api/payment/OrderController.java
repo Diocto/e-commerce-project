@@ -73,7 +73,7 @@ public class OrderController {
                         orderProduct.getQuantity()
                 )).toList(),
                 order.getUserCouponId(),
-                order.getOrderProducts().stream().mapToLong(orderProduct -> orderProduct.getPrice() * orderProduct.getQuantity()).sum(),
+                order.getAmount(),
                 order.getDiscountAmount()
         ));
     }

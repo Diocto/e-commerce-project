@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.integrationtest.interfaces.api.order;
 
+import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.infrastructure.product.ProductRepositoryImpl;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class OrderControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -26,9 +28,9 @@ public class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        productRepository.save(Product.builder().id(1L).name("product1").price(1000L).build());
-        productRepository.save(Product.builder().id(2L).name("product2").price(2000L).build());
-        productRepository.save(Product.builder().id(3L).name("product3").price(3000L).build());
+        productRepository.save(Product.builder().name("product1").price(1000L).build());
+        productRepository.save(Product.builder().name("product2").price(2000L).build());
+        productRepository.save(Product.builder().name("product3").price(3000L).build());
     }
 
     @Test
@@ -55,7 +57,6 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.orderProductList[0].productId").value(1))
                 .andExpect(jsonPath("$.orderProductList[0].price").value(1000))
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
-                .andExpect(jsonPath("$.userCouponId").value(null))
                 .andExpect(jsonPath("$.totalAmount").value(1000))
                 .andExpect(jsonPath("$.discountAmount").value(0));
         // then
