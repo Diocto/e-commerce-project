@@ -14,5 +14,5 @@ import java.util.Optional;
 public interface OrderJpaRepository extends JpaRepository<Order, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from Order o where o.id = :id")
-    Optional<Order> findByIdWithLock(Long orderId);
+    Optional<Order> findByIdWithLock(Long id);
 }

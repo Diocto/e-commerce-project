@@ -1,8 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.product.Product;
 import lombok.*;
 
@@ -19,15 +17,17 @@ public class OrderProduct {
     @GeneratedValue
     private Long id;
 
-    private Long orderId;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
     private Long productId;
     private String productName;
     private Long quantity;
     private Long price;
 
-    public static List<OrderProduct> create(Long orderId, Product product, Long quantity) {
+    public static List<OrderProduct> create(Order order, Product product, Long quantity) {
         return List.of(OrderProduct.builder()
-                .orderId(orderId)
+                .order(order)
                 .productId(product.getId())
                 .productName(product.getName())
                 .quantity(quantity)

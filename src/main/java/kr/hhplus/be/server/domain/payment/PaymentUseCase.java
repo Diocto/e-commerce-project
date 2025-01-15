@@ -8,13 +8,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentUseCase {
-    private final OrderService orderService;
-    private final BalanceService balanceService;
     private final PaymentService paymentService;
 
     public PaymentUseCase(OrderService orderService, BalanceService balanceService, PaymentService paymentService) {
-        this.orderService = orderService;
-        this.balanceService = balanceService;
         this.paymentService = paymentService;
     }
 

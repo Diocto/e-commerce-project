@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +25,17 @@ public class Order {
     private Long id;
     private Long userId;
     private OrderStatus status = OrderStatus.PENDING;
-    @OneToMany
-    private List<OrderProduct> orderProducts;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
     private Long amount;
     private Long discountAmount = 0L;
     private Long userCouponId;
+
+    public void validate(Long userId){
+        if (!this.userId.equals(userId)){
+            throw new IllegalArgumentException("주문자가 일치하지 않습니다");
+        }
+    }
 
     public enum OrderStatus{
         PENDING, PAYED, DELIVERED, CANCELED, REFUNDED, COMPLETED
@@ -41,10 +48,10 @@ public class Order {
         }
         Order order = new Order();
         order.userId = userId;
-        order.orderProducts = product_quantity_list.stream()
-                .map(pair -> OrderProduct.create(order.getId(), pair.getFirst(), pair.getSecond()))
+        order.orderProducts = new ArrayList<>(product_quantity_list.stream()
+                .map(pair -> OrderProduct.create(order, pair.getFirst(), pair.getSecond()))
                 .flatMap(List::stream)
-                .toList();
+                .toList());
         Long totalAmount = product_quantity_list.stream().mapToLong(
                 productLongPair -> productLongPair.getFirst().getPrice() * productLongPair.getSecond()
         ).sum();

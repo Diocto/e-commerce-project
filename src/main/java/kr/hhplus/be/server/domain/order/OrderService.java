@@ -8,7 +8,6 @@ import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +38,12 @@ public class OrderService {public static class Command{
     }
     private final IOrderRepository orderRepository;
     private final IProductRepository productRepository;
+    private final IOrderProductRepository orderProductRepository;
 
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IUserCouponRepository userCouponRepository) {
+    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IUserCouponRepository userCouponRepository, IOrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
     public Order createOrder(Command.CreateOrderCommand command) {
@@ -64,6 +65,7 @@ public class OrderService {public static class Command{
                 .toList();
 
         Order order = Order.create(command.userId, productQuantityList, command.userCoupon);
+        order.getOrderProducts().forEach(orderProductRepository::save);
         orderRepository.save(order);
 
         return order;

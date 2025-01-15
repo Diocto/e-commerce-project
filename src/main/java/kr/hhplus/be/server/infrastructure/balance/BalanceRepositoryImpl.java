@@ -20,8 +20,8 @@ public class BalanceRepositoryImpl implements IBalanceRepository{
     }
 
     @Override
-    public Optional<Balance> findById(Long id) {
-        return balanceJpaRepository.findById(id);
+    public Optional<Balance> findByUserId(Long userId) {
+        return balanceJpaRepository.findByUserId(userId);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class BalanceRepositoryImpl implements IBalanceRepository{
     }
 
     @Override
-    public Optional<Balance> findByIdWithLock(Long id) {
-        return balanceJpaRepository.findByIdWithLock(id);
+    public Optional<Balance> findByUserIdWithLock(Long userId) {
+        return balanceJpaRepository.findByUserIdWithLock(userId);
     }
 }

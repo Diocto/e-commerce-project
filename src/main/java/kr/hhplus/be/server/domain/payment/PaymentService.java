@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.payment;
 
+import datacenter.DataCenterClient;
 import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.BalanceService;
@@ -18,12 +19,11 @@ import java.util.Map;
 
 @Service
 public class PaymentService {
-
     private final IProductRepository productRepository;
     private final IBalanceRepository balanceRepository;
     private final IOrderRepository orderRepository;
 
-    public PaymentService(ProductService productService, OrderService orderService, BalanceService balanceService, ProductRepositoryImpl productRepositoryImpl, IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository) {
+    public PaymentService(IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository) {
         this.productRepository = productRepository;
         this.balanceRepository = balanceRepository;
         this.orderRepository = orderRepository;
@@ -31,13 +31,9 @@ public class PaymentService {
 
     @Transactional
     public void payOrder(Long orderId, Long userId) {
-        /// 이 함수가 도메인 엔티티를 받지 않는 이유는, 트랙잭션 경계를 명확하게 하기 위함임.
-        /// MSA 로 확장을 하는 것에 대한 고려를 한다면 서비스를 호출해야 마땅한가?
-        /// 하지만 여기는 모놀리식 이기 때문에 이정도로만 해도 나중에 확장하기 편할 것이라는 기대.
-
-        Balance balance = balanceRepository.findByIdWithLock(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저에게 할당된 잔액이 없습니다"));
+        Balance balance = balanceRepository.findByUserIdWithLock(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저에게 할당된 잔액이 없습니다"));
         Order order = orderRepository.findByIdWithLock(orderId).orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다"));
-
+        order.validate(userId);
         Map<Long, Product> productMap = productRepository.getProductsWithLock(order.getOrderProducts().stream().map(OrderProduct::getProductId).toList());
         for (OrderProduct orderProduct : order.getOrderProducts()) {
             Product product = productMap.get(orderProduct.getProductId());
@@ -50,5 +46,7 @@ public class PaymentService {
         orderRepository.save(order);
         balanceRepository.save(balance);
         productRepository.saveAll(productMap.values().stream().toList());
+
+        DataCenterClient.sendData(order.toString());
     }
 }

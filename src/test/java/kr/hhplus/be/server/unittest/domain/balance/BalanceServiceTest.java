@@ -35,11 +35,11 @@ public class BalanceServiceTest {
         Long userId = 1L;
         Long point = 1L;
 
-        when(balanceRepositoryImpl.findById(userId)).thenReturn(Optional.of(balance));
+        when(balanceRepositoryImpl.findByUserId(userId)).thenReturn(Optional.of(balance));
         uut.charge(userId, point);
 
         // then
-        verify(balanceRepositoryImpl).findById(userId);
+        verify(balanceRepositoryImpl).findByUserId(userId);
         verify(balance).charge(point);
         verify(balanceRepositoryImpl).save(balance);
 
@@ -51,11 +51,11 @@ public class BalanceServiceTest {
         Long userId = 1L;
         Long point = 1L;
 
-        when(balanceRepositoryImpl.findById(userId)).thenReturn(Optional.of(balance));
+        when(balanceRepositoryImpl.findByUserId(userId)).thenReturn(Optional.of(balance));
         uut.use(userId, point);
 
         // then
-        verify(balanceRepositoryImpl).findById(userId);
+        verify(balanceRepositoryImpl).findByUserId(userId);
         verify(balance).use(point);
         verify(balanceRepositoryImpl).save(balance);
     }
