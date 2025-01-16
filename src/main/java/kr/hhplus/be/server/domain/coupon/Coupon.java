@@ -26,7 +26,7 @@ public class Coupon {
     private Long issuedCouponCount = 0L;
 
     public UserCoupon issueCoupon(Long userId) {
-        if( limitCouponCount < issuedCouponCount ) {
+        if( limitCouponCount > issuedCouponCount ) {
             issuedCouponCount += 1;
             return UserCoupon.builder().userId(userId).coupon(this).build();
         }
