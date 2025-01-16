@@ -14,7 +14,7 @@ public class BalanceService {
     }
 
     public Balance charge(Long userId, Long balance) {
-        Balance balanceEntity = balanceRepository.findByUserId(userId).orElse(Balance.builder().id(userId).balance(0L).userId(userId).build());
+        Balance balanceEntity = balanceRepository.findByUserId(userId).orElse(Balance.builder().balance(0L).userId(userId).build());
         balanceEntity.charge(balance);
         balanceRepository.save(balanceEntity);
         return balanceEntity;
@@ -29,6 +29,6 @@ public class BalanceService {
     }
 
     public Balance get(Long userId) {
-        return balanceRepository.findByUserId(userId).orElse(Balance.builder().id(userId).balance(0L).userId(userId).build());
+        return balanceRepository.findByUserId(userId).orElse(Balance.builder().balance(0L).userId(userId).build());
     }
 }
