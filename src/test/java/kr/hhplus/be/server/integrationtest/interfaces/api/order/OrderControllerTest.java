@@ -110,7 +110,7 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
                 .andExpect(jsonPath("$.totalAmount").value(500))
                 .andExpect(jsonPath("$.discountAmount").value(500))
-                .andExpect(jsonPath("$.userCouponId").value(1));
+                .andExpect(jsonPath("$.userCouponId").value(initUserCoupon.getId()));
         // then
     }
 
@@ -134,7 +134,7 @@ public class OrderControllerTest {
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
-                                "  \"userCouponId\": "+ initCoupon.getId()+"\n" +
+                                "  \"userCouponId\": "+ initUserCoupon.getId()+"\n" +
                                 "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").exists())
@@ -159,7 +159,7 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"productId\": 939393939393399339120319230,\n" +
+                                "      \"productId\": 939393939230,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +

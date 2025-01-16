@@ -72,8 +72,10 @@ public class PaymentControllerTest {
 
     @Test
     void 없는주문서_결제요청시_에러_발생() throws Exception {
-        mockMvc.perform(post("/payments/1"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(post("/payments").contentType("application/json").content("{\n" +
+                        "  \"userId\": 1,\n" +
+                        "  \"orderId\": 1\n}"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -97,14 +99,12 @@ public class PaymentControllerTest {
         OrderController.Response.Order order = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), OrderController.Response.Order.class);
         Long orderId = order.orderId();
         /// when
-        assertThrows(Exception.class, () -> {
-            mockMvc.perform(post("/payments")
-                            .contentType("application/json")
-                            .content("{\n" +
-                                    "  \"userId\": 2,\n" +
-                                    "  \"orderId\": " + orderId.toString() + "\n}"))
-                    .andExpect(status().isBadRequest());
-        });
+        mockMvc.perform(post("/payments")
+                        .contentType("application/json")
+                        .content("{\n" +
+                                "  \"userId\": 2,\n" +
+                                "  \"orderId\": " + orderId.toString() + "\n}"))
+                .andExpect(status().isBadRequest());
 
     }
 

@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -56,10 +57,12 @@ public class CouponControllerTest {
     }
 
     @Test
-    void 쿠폰_발급만료일때_요청하면_실패한다() {
-        assertThrows(Exception.class, () -> {
-            mockMvc.perform(post("/coupons/"+ coupon2.getId() +"/users/1"));
-        });
+    void 쿠폰_발급만료일때_요청하면_실패한다() throws Exception {
+        mockMvc.perform(post("/coupons/"+ coupon2.getId() +"/users/1"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.code").value("BAD_STATE"))
+                .andExpect(jsonPath("$.message").value("이미 소진된 쿠폰입니다"));
+        ;
     }
 
 }
