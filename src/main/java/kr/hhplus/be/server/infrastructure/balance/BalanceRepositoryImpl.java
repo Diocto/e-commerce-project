@@ -33,4 +33,14 @@ public class BalanceRepositoryImpl implements IBalanceRepository{
     public Optional<Balance> findByUserIdWithLock(Long userId) {
         return balanceJpaRepository.findByUserIdWithLock(userId);
     }
+
+    @Override
+    public void flush() {
+        balanceJpaRepository.flush();
+    }
+
+    @Override
+    public void deleteAll() {
+        balanceJpaRepository.deleteAll();
+    }
 }

@@ -7,4 +7,6 @@ public interface IBalanceRepository {
     Optional<Balance> findByUserId(Long id);
     void deleteById(Long id);
     Optional<Balance> findByUserIdWithLock(Long userId);
+    void flush();
+    void deleteAll();
 }

@@ -1,8 +1,6 @@
 package kr.hhplus.be.server.domain.balance;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Balance {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long balance;
+    @Column(name = "user_id", unique = true)
     private Long userId;
-
+    private Long balance;
     public void charge(Long balance) {
         if (balance < 0) {
             throw new IllegalArgumentException("충전할 포인트가 0보다 작습니다");
