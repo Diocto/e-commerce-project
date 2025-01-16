@@ -3,16 +3,12 @@ package kr.hhplus.be.server.domain.payment;
 import datacenter.DataCenterClient;
 import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.domain.balance.Balance;
-import kr.hhplus.be.server.domain.balance.BalanceService;
 import kr.hhplus.be.server.domain.balance.IBalanceRepository;
 import kr.hhplus.be.server.domain.order.IOrderRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderProduct;
-import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.ProductService;
-import kr.hhplus.be.server.infrastructure.product.ProductRepositoryImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -34,14 +30,14 @@ public class PaymentService {
         Balance balance = balanceRepository.findByUserIdWithLock(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저에게 할당된 잔액이 없습니다"));
         Order order = orderRepository.findByIdWithLock(orderId).orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다"));
         order.validate(userId);
-        Map<Long, Product> productMap = productRepository.getProductsWithLock(order.getOrderProducts().stream().map(OrderProduct::getProductId).toList());
+        Map<Long, Product> productMap = productRepository.getProductsWithLock(order.getOrderProducts().stream().map(orderProduct -> orderProduct.getProduct().getId()).toList());
         for (OrderProduct orderProduct : order.getOrderProducts()) {
-            Product product = productMap.get(orderProduct.getProductId());
+            Product product = productMap.get(orderProduct.getProduct().getId());
             product.decreaseStock(orderProduct.getQuantity());
         }
 
         balance.use(order.getAmount());
-        order.complete();
+        order.completePay();
 
         orderRepository.save(order);
         balanceRepository.save(balance);

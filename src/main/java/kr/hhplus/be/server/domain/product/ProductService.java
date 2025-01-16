@@ -1,9 +1,10 @@
 package kr.hhplus.be.server.domain.product;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ProductService {
@@ -13,7 +14,14 @@ public class ProductService {
         this.productRepositoryImpl = productRepositoryImpl;
     }
 
-    public List<Product> getProducts(Integer page, Integer size) {
-        return productRepositoryImpl.getPopularProducts(page, size);
+    public List<ProductQuantityDto> getPopularProducts(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<ProductQuantityDto> result = productRepositoryImpl.getPopularProducts(pageable);
+        if ( result.isEmpty() ){
+            result = productRepositoryImpl.getProducts(pageable).stream().map(
+                    product -> new ProductQuantityDto(product, 0L)
+            ).toList();
+        }
+        return result;
     }
 }

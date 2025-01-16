@@ -61,7 +61,7 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"productId\": 1,\n" +
+                                "      \"id\": 1,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
@@ -70,7 +70,7 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").exists())
                 .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.orderProductList[0].productId").value(1))
+                .andExpect(jsonPath("$.orderProductList[0].id").value(1))
                 .andExpect(jsonPath("$.orderProductList[0].price").value(1000))
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
                 .andExpect(jsonPath("$.totalAmount").value(1000))
@@ -90,7 +90,7 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"productId\": 1,\n" +
+                                "      \"id\": 1,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
@@ -99,7 +99,7 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").exists())
                 .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.orderProductList[0].productId").value(1))
+                .andExpect(jsonPath("$.orderProductList[0].id").value(1))
                 .andExpect(jsonPath("$.orderProductList[0].price").value(1000))
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
                 .andExpect(jsonPath("$.totalAmount").value(500))
@@ -120,11 +120,11 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"productId\": 1,\n" +
+                                "      \"id\": 1,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    },\n" +
                                 "    {\n" +
-                                "      \"productId\": 2,\n" +
+                                "      \"id\": 2,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
@@ -133,10 +133,10 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").exists())
                 .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.orderProductList[0].productId").value(1))
+                .andExpect(jsonPath("$.orderProductList[0].id").value(1))
                 .andExpect(jsonPath("$.orderProductList[0].price").value(1000))
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
-                .andExpect(jsonPath("$.orderProductList[1].productId").value(2))
+                .andExpect(jsonPath("$.orderProductList[1].id").value(2))
                 .andExpect(jsonPath("$.orderProductList[1].price").value(2000))
                 .andExpect(jsonPath("$.orderProductList[1].quantity").value(1))
                 .andExpect(jsonPath("$.totalAmount").value(1500))
@@ -153,7 +153,7 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"productId\": 5,\n" +
+                                "      \"id\": 5,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +

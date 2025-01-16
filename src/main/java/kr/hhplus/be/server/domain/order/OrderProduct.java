@@ -20,7 +20,9 @@ public class OrderProduct {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
     private String productName;
     private Long quantity;
     private Long price;
@@ -28,7 +30,7 @@ public class OrderProduct {
     public static List<OrderProduct> create(Order order, Product product, Long quantity) {
         return List.of(OrderProduct.builder()
                 .order(order)
-                .productId(product.getId())
+                .product(product)
                 .productName(product.getName())
                 .quantity(quantity)
                 .price(product.getPrice())

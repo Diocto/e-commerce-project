@@ -74,7 +74,7 @@ public class PaymentControllerTest {
                             "  \"userId\": 1,\n" +
                             "  \"orderProductRequests\": [\n" +
                             "    {\n" +
-                            "      \"productId\": 1,\n" +
+                            "      \"id\": 1,\n" +
                             "      \"quantity\": 1\n" +
                             "    }\n" +
                             "  ],\n" +
@@ -103,7 +103,7 @@ public class PaymentControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"productId\": 1,\n" +
+                                "      \"id\": 1,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +

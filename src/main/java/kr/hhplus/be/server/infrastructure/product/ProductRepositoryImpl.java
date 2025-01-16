@@ -2,7 +2,9 @@ package kr.hhplus.be.server.infrastructure.product;
 
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.product.ProductQuantityDto;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,9 +21,13 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
-    public List<Product> getPopularProducts(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return productJpaRepository.findAll(pageRequest).getContent();
+    public List<ProductQuantityDto> getPopularProducts(Pageable pageable) {
+        return productJpaRepository.getPopularProducts(pageable);
+    }
+
+    @Override
+    public List<Product> getProducts(Pageable pageable) {
+        return productJpaRepository.findAll(pageable).toList();
     }
 
     @Override

@@ -76,7 +76,7 @@ public class OrderService {public static class Command{
     }
 
     public void completeOrder(Order order) {
-        order.complete();
+        order.completePay();
         orderRepository.save(order);
     }
 

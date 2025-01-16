@@ -68,7 +68,7 @@ public class OrderController {
                 order.getId(),
                 order.getUserId(),
                 order.getOrderProducts().stream().map(orderProduct -> new Response.OrderProduct(
-                        orderProduct.getProductId(),
+                        orderProduct.getProduct().getId(),
                         orderProduct.getPrice(),
                         orderProduct.getQuantity()
                 )).toList(),

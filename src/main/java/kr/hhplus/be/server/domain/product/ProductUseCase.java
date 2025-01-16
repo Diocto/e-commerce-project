@@ -14,7 +14,7 @@ public class ProductUseCase {
         this.productService = productService;
     }
 
-    public List<Product> getProducts(Integer page, Integer size) {
-        return productService.getProducts(page, size);
+    public List<ProductQuantityDto> getPopularProducts(Integer page, Integer size) {
+        return productService.getPopularProducts(page, size);
     }
 }

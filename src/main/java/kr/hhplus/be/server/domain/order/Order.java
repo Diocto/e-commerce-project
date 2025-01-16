@@ -1,17 +1,14 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.Math.round;
 
@@ -38,7 +35,7 @@ public class Order {
     }
 
     public enum OrderStatus{
-        PENDING, PAYED, DELIVERED, CANCELED, REFUNDED, COMPLETED
+        PENDING, PAID, DELIVERED, CANCELED, REFUNDED, COMPLETED
     }
 
     public static Order create(Long userId, List<Pair<Product, Long>> product_quantity_list, UserCoupon userCoupon) {
@@ -61,7 +58,7 @@ public class Order {
         return order;
     }
 
-    public void complete(){
-        this.status = OrderStatus.COMPLETED;
+    public void completePay(){
+        this.status = OrderStatus.PAID;
     }
 }
