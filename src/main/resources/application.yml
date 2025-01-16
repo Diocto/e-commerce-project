@@ -6,6 +6,8 @@ spring:
   datasource:
     name: HangHaePlusDataSource
     type: com.zaxxer.hikari.HikariDataSource
+    username: application
+    password: application
     hikari:
       maximum-pool-size: 3
       connection-timeout: 10000
@@ -16,10 +18,12 @@ spring:
     generate-ddl: false
     show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+
     properties:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
 springdoc:
   api-docs:
