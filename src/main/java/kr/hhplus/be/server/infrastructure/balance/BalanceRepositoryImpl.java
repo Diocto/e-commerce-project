@@ -15,8 +15,8 @@ public class BalanceRepositoryImpl implements IBalanceRepository{
     }
 
     @Override
-    public void save(Balance balance) {
-        balanceJpaRepository.save(balance);
+    public Balance save(Balance balance) {
+        return balanceJpaRepository.save(balance);
     }
 
     @Override

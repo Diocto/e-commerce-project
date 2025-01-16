@@ -54,7 +54,7 @@ public class Order {
         ).sum();
         order.amount = round(totalAmount * (1 - discountPercent * 0.01));
         order.discountAmount = round(totalAmount * discountPercent * 0.01);
-        order.userCouponId = userCoupon.getId();
+        order.userCouponId = userCoupon == null? null : userCoupon.getId() ;
         return order;
     }
 

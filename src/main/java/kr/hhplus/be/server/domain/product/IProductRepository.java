@@ -9,7 +9,7 @@ public interface IProductRepository {
     List<ProductQuantityDto> getPopularProducts(Pageable pageable);
     List<Product> getProducts(Pageable pageable);
     List<Product> getProducts(List<Long> productIds);
-    void save(Product product);
+    Product save(Product product);
     void saveAll(List<Product> products);
     Map<Long, Product> getProductsWithLock(List<Long> list);
 }

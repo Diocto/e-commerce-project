@@ -36,17 +36,23 @@ public class OrderControllerTest {
     @Autowired
     IUserCouponRepository userCouponRepository;
 
+    Product initProduct1;
+    Product initProduct2;
+    Product initProduct3;
+
+    Coupon initCoupon;
+    UserCoupon initUserCoupon;
+
     @BeforeEach
     void setUp() {
-        /// TODO: 셋업한 아이템의 ID 를 테스트시 전달 가능해야함. 또는 고정 ID 를 부여할것
-        productRepository.save(Product.builder().name("product1").price(1000L).build());
-        productRepository.save(Product.builder().name("product2").price(2000L).build());
-        productRepository.save(Product.builder().name("product3").price(3000L).build());
+        initProduct1 = productRepository.save(Product.builder().name("product1").price(1000L).build());
+        initProduct2 = productRepository.save(Product.builder().name("product2").price(2000L).build());
+        initProduct3 = productRepository.save(Product.builder().name("product3").price(3000L).build());
 
-        Coupon coupon = Coupon.builder().discountPercent(50L).name("testCoupon").build();
-        couponRepository.save(coupon);
-        UserCoupon userCoupon = UserCoupon.builder().coupon(coupon).userId(1L).build();
-        userCouponRepository.save(userCoupon);
+        initCoupon = Coupon.builder().discountPercent(50L).name("testCoupon").build();
+        couponRepository.save(initCoupon);
+        initUserCoupon = UserCoupon.builder().coupon(initCoupon).userId(1L).build();
+        userCouponRepository.save(initUserCoupon);
     }
 
     @Test
@@ -61,7 +67,7 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"id\": 1,\n" +
+                                "      \"productId\": "+initProduct1.getId()+" ,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
@@ -70,7 +76,7 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").exists())
                 .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.orderProductList[0].id").value(1))
+                .andExpect(jsonPath("$.orderProductList[0].productId").value(initProduct1.getId()))
                 .andExpect(jsonPath("$.orderProductList[0].price").value(1000))
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
                 .andExpect(jsonPath("$.totalAmount").value(1000))
@@ -90,16 +96,16 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"id\": 1,\n" +
+                                "      \"productId\": "+initProduct1.getId()+",\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
-                                "  \"userCouponId\": 1\n" +
+                                "  \"userCouponId\": "+initUserCoupon.getId()+"\n" +
                                 "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").exists())
                 .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.orderProductList[0].id").value(1))
+                .andExpect(jsonPath("$.orderProductList[0].productId").value(initProduct1.getId()))
                 .andExpect(jsonPath("$.orderProductList[0].price").value(1000))
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
                 .andExpect(jsonPath("$.totalAmount").value(500))
@@ -120,28 +126,28 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"id\": 1,\n" +
+                                "      \"productId\": "+initProduct1.getId()+",\n" +
                                 "      \"quantity\": 1\n" +
                                 "    },\n" +
                                 "    {\n" +
-                                "      \"id\": 2,\n" +
+                                "      \"productId\": "+initProduct2.getId()+",\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
-                                "  \"userCouponId\": 1\n" +
+                                "  \"userCouponId\": "+ initCoupon.getId()+"\n" +
                                 "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").exists())
                 .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.orderProductList[0].id").value(1))
+                .andExpect(jsonPath("$.orderProductList[0].productId").value(initProduct1.getId()))
                 .andExpect(jsonPath("$.orderProductList[0].price").value(1000))
                 .andExpect(jsonPath("$.orderProductList[0].quantity").value(1))
-                .andExpect(jsonPath("$.orderProductList[1].id").value(2))
+                .andExpect(jsonPath("$.orderProductList[1].productId").value(initProduct2.getId()))
                 .andExpect(jsonPath("$.orderProductList[1].price").value(2000))
                 .andExpect(jsonPath("$.orderProductList[1].quantity").value(1))
                 .andExpect(jsonPath("$.totalAmount").value(1500))
                 .andExpect(jsonPath("$.discountAmount").value(1500))
-                .andExpect(jsonPath("$.userCouponId").value(1));
+                .andExpect(jsonPath("$.userCouponId").value(initUserCoupon.getId()));
         // then
     }
 
@@ -153,7 +159,7 @@ public class OrderControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"id\": 5,\n" +
+                                "      \"productId\": 939393939393399339120319230,\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +

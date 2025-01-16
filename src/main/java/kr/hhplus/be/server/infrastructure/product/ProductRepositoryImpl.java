@@ -3,7 +3,6 @@ package kr.hhplus.be.server.infrastructure.product;
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductQuantityDto;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -36,8 +35,8 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
-    public void save(Product product) {
-        productJpaRepository.save(product);
+    public Product save(Product product) {
+        return productJpaRepository.save(product);
     }
 
     @Override

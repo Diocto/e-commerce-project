@@ -43,20 +43,30 @@ public class ProductControllerTest {
     @Autowired
     IBalanceRepository balanceRepository;
 
+    Product initProduct1;
+    Product initProduct2;
+    Product initProduct3;
+
+    Coupon initCoupon;
+    UserCoupon initUserCoupon;
+
+    Balance initBalance1;
+    Balance initBalance2;
+
     @BeforeEach
     void setUp() {
         /// TODO: 셋업한 아이템의 ID 를 테스트시 전달 가능해야함. 또는 고정 ID 를 부여할것
-        productRepository.save(Product.builder().name("product1").price(1000L).stock(10L).build());
-        productRepository.save(Product.builder().name("product2").price(2000L).stock(20L).build());
-        productRepository.save(Product.builder().name("product3").price(3000L).stock(30L).build());
+        initProduct1 = productRepository.save(Product.builder().name("product1").price(1000L).stock(10L).build());
+        initProduct2 = productRepository.save(Product.builder().name("product2").price(2000L).stock(20L).build());
+        initProduct3 = productRepository.save(Product.builder().name("product3").price(3000L).stock(30L).build());
 
-        Coupon coupon = Coupon.builder().discountPercent(50L).name("testCoupon").build();
-        couponRepository.save(coupon);
-        UserCoupon userCoupon = UserCoupon.builder().coupon(coupon).userId(1L).build();
-        userCouponRepository.save(userCoupon);
+        initCoupon = Coupon.builder().discountPercent(50L).limitCouponCount(10L).name("testCoupon").build();
+        couponRepository.save(initCoupon);
+        initUserCoupon = UserCoupon.builder().coupon(initCoupon).userId(1L).build();
+        userCouponRepository.save(initUserCoupon);
 
-        balanceRepository.save(Balance.builder().userId(1L).balance(100000000L).build());
-        balanceRepository.save(Balance.builder().userId(2L).balance(10000L).build());
+        initBalance1 = balanceRepository.save(Balance.builder().userId(1L).balance(100000000L).build());
+        initBalance2 = balanceRepository.save(Balance.builder().userId(2L).balance(10000L).build());
 
     }
 
@@ -66,15 +76,15 @@ public class ProductControllerTest {
                         .queryParam("page", "0")
                         .queryParam("size", "3"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productViewList[0].id").value(1))
+                .andExpect(jsonPath("$.productViewList[0].id").value(initProduct1.getId()))
                 .andExpect(jsonPath("$.productViewList[0].productName").value("product1"))
                 .andExpect(jsonPath("$.productViewList[0].price").value(1000))
                 .andExpect(jsonPath("$.productViewList[0].stockQuantity").value(10))
-                .andExpect(jsonPath("$.productViewList[1].id").value(2))
+                .andExpect(jsonPath("$.productViewList[1].id").value(initProduct2.getId()))
                 .andExpect(jsonPath("$.productViewList[1].productName").value("product2"))
                 .andExpect(jsonPath("$.productViewList[1].price").value(2000))
                 .andExpect(jsonPath("$.productViewList[1].stockQuantity").value(20))
-                .andExpect(jsonPath("$.productViewList[2].id").value(3))
+                .andExpect(jsonPath("$.productViewList[2].id").value(initProduct3.getId()))
                 .andExpect(jsonPath("$.productViewList[2].productName").value("product3"))
                 .andExpect(jsonPath("$.productViewList[2].price").value(3000))
                 .andExpect(jsonPath("$.productViewList[2].stockQuantity").value(30))
@@ -91,19 +101,19 @@ public class ProductControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"productId\": 1,\n" +
+                                "      \"productId\": "+initProduct1.getId()+",\n" +
                                 "      \"quantity\": 3\n" +
                                 "    },\n" +
                                 "    {\n" +
-                                "      \"productId\": 2,\n" +
+                                "      \"productId\": "+initProduct2.getId()+",\n" +
                                 "      \"quantity\": 10\n" +
                                 "    },\n" +
                                 "    {\n" +
-                                "      \"productId\": 3,\n" +
+                                "      \"productId\": "+initProduct3.getId()+",\n" +
                                 "      \"quantity\": 5\n" +
                                 "    }\n" +
                                 "  ],\n" +
-                                "  \"userCouponId\": 1\n" +
+                                "  \"userCouponId\": "+initUserCoupon.getId()+"\n" +
                                 "}")
                 ).andReturn();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -123,15 +133,15 @@ public class ProductControllerTest {
                         .queryParam("size", "3"))
         /// then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productViewList[0].id").value(2))
+                .andExpect(jsonPath("$.productViewList[0].id").value(initProduct2.getId()))
                 .andExpect(jsonPath("$.productViewList[0].productName").value("product2"))
                 .andExpect(jsonPath("$.productViewList[0].price").value(2000))
                 .andExpect(jsonPath("$.productViewList[0].stockQuantity").value(10))
-                .andExpect(jsonPath("$.productViewList[1].id").value(3))
+                .andExpect(jsonPath("$.productViewList[1].id").value(initProduct3.getId()))
                 .andExpect(jsonPath("$.productViewList[1].productName").value("product3"))
                 .andExpect(jsonPath("$.productViewList[1].price").value(3000))
                 .andExpect(jsonPath("$.productViewList[1].stockQuantity").value(25))
-                .andExpect(jsonPath("$.productViewList[2].id").value(1))
+                .andExpect(jsonPath("$.productViewList[2].id").value(initProduct1.getId()))
                 .andExpect(jsonPath("$.productViewList[2].productName").value("product1"))
                 .andExpect(jsonPath("$.productViewList[2].price").value(1000))
                 .andExpect(jsonPath("$.productViewList[2].stockQuantity").value(7))

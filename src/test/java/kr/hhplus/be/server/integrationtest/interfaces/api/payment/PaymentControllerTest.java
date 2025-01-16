@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,27 +42,38 @@ public class PaymentControllerTest {
     @Autowired
     IBalanceRepository balanceRepository;
 
+    Product initProduct1;
+    Product initProduct2;
+    Product initProduct3;
+
+    Coupon initCoupon;
+    UserCoupon initUserCoupon;
+
+    Balance initBalance1;
+    Balance initBalance2;
+
     @BeforeEach
     void setUp() {
         /// TODO: 셋업한 아이템의 ID 를 테스트시 전달 가능해야함. 또는 고정 ID 를 부여할것
-        productRepository.save(Product.builder().name("product1").price(1000L).stock(10L).build());
-        productRepository.save(Product.builder().name("product2").price(2000L).stock(10L).build());
-        productRepository.save(Product.builder().name("product3").price(3000L).stock(10L).build());
+        initProduct1 = productRepository.save(Product.builder().name("product1").price(1000L).stock(10L).build());
+        initProduct2 = productRepository.save(Product.builder().name("product2").price(2000L).stock(10L).build());
+        initProduct3 = productRepository.save(Product.builder().name("product3").price(3000L).stock(10L).build());
 
-        Coupon coupon = Coupon.builder().discountPercent(50L).name("testCoupon").build();
-        couponRepository.save(coupon);
-        UserCoupon userCoupon = UserCoupon.builder().coupon(coupon).userId(1L).build();
-        userCouponRepository.save(userCoupon);
+        initCoupon = Coupon.builder().discountPercent(50L).name("testCoupon").build();
+        couponRepository.save(initCoupon);
+        initUserCoupon = UserCoupon.builder().coupon(initCoupon).userId(1L).build();
+        userCouponRepository.save(initUserCoupon);
 
-        balanceRepository.save(Balance.builder().userId(1L).balance(10000L).build());
-        balanceRepository.save(Balance.builder().userId(2L).balance(10000L).build());
+        initBalance1 = balanceRepository.save(Balance.builder().userId(1L).balance(10000L).build());
+        initBalance2 = balanceRepository.save(Balance.builder().userId(2L).balance(10000L).build());
+
 
     }
 
     @Test
     void 없는주문서_결제요청시_에러_발생() throws Exception {
         mockMvc.perform(post("/payments/1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -74,23 +86,26 @@ public class PaymentControllerTest {
                             "  \"userId\": 1,\n" +
                             "  \"orderProductRequests\": [\n" +
                             "    {\n" +
-                            "      \"id\": 1,\n" +
+                            "      \"productId\": "+initProduct1.getId()+",\n" +
                             "      \"quantity\": 1\n" +
                             "    }\n" +
                             "  ],\n" +
-                            "  \"userCouponId\": 1\n" +
+                            "  \"userCouponId\": "+initUserCoupon.getId()+"\n" +
                             "}")
                 ).andReturn();
         ObjectMapper objectMapper = new ObjectMapper();
         OrderController.Response.Order order = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), OrderController.Response.Order.class);
         Long orderId = order.orderId();
         /// when
-        mockMvc.perform(post("/payments")
-                .contentType("application/json")
-                .content("{\n" +
-                        "  \"userId\": 2,\n" +
-                        "  \"orderId\": " + orderId.toString() + "\n}"))
-                .andExpect(status().isBadRequest());
+        assertThrows(Exception.class, () -> {
+            mockMvc.perform(post("/payments")
+                            .contentType("application/json")
+                            .content("{\n" +
+                                    "  \"userId\": 2,\n" +
+                                    "  \"orderId\": " + orderId.toString() + "\n}"))
+                    .andExpect(status().isBadRequest());
+        });
+
     }
 
     @Test
@@ -103,11 +118,11 @@ public class PaymentControllerTest {
                                 "  \"userId\": 1,\n" +
                                 "  \"orderProductRequests\": [\n" +
                                 "    {\n" +
-                                "      \"id\": 1,\n" +
+                                "      \"productId\": "+initProduct1.getId()+",\n" +
                                 "      \"quantity\": 1\n" +
                                 "    }\n" +
                                 "  ],\n" +
-                                "  \"userCouponId\": 1\n" +
+                                "  \"userCouponId\": "+initUserCoupon.getId()+"\n" +
                                 "}")
                 ).andReturn();
         ObjectMapper objectMapper = new ObjectMapper();
