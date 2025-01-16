@@ -23,4 +23,9 @@ public class CouponRepositoryImpl implements ICouponRepository {
     public void save(Coupon coupon) {
         couponJpaRepository.save(coupon);
     }
+
+    @Override
+    public Optional<Coupon> getByIdWithLock(Long id) {
+        return couponJpaRepository.getCouponWithLock(id);
+    }
 }
