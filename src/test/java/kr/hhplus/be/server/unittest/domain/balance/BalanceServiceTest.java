@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.unittest.domain.balance;
 
+import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.BalanceService;
 import kr.hhplus.be.server.infrastructure.balance.BalanceRepositoryImpl;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
+@Transactional
 public class BalanceServiceTest {
     private BalanceService uut;
 
@@ -35,11 +37,11 @@ public class BalanceServiceTest {
         Long userId = 1L;
         Long point = 1L;
 
-        when(balanceRepositoryImpl.findByUserId(userId)).thenReturn(Optional.of(balance));
+        when(balanceRepositoryImpl.findByUserIdWithLock(userId)).thenReturn(Optional.of(balance));
         uut.charge(userId, point);
 
         // then
-        verify(balanceRepositoryImpl).findByUserId(userId);
+        verify(balanceRepositoryImpl).findByUserIdWithLock(userId);
         verify(balance).charge(point);
         verify(balanceRepositoryImpl).save(balance);
 
@@ -51,11 +53,11 @@ public class BalanceServiceTest {
         Long userId = 1L;
         Long point = 1L;
 
-        when(balanceRepositoryImpl.findByUserId(userId)).thenReturn(Optional.of(balance));
+        when(balanceRepositoryImpl.findByUserIdWithLock(userId)).thenReturn(Optional.of(balance));
         uut.use(userId, point);
 
         // then
-        verify(balanceRepositoryImpl).findByUserId(userId);
+        verify(balanceRepositoryImpl).findByUserIdWithLock(userId);
         verify(balance).use(point);
         verify(balanceRepositoryImpl).save(balance);
     }

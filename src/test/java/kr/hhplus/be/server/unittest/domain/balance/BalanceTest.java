@@ -25,7 +25,7 @@ public class BalanceTest {
     @Test
     public void charge_충전할포인트가_0보다크면_포인트가_충전된다() {
         utt.charge(1L);
-        assertEquals(1L, utt.getBalance());
+        assertEquals(2L, utt.getBalance());
     }
 
     @Test
@@ -38,7 +38,7 @@ public class BalanceTest {
     @Test
     public void use_포인트가_부족하면_IllegalArgumentException이_발생한다() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            utt.use(1L);
+            utt.use(10L);
         });
     }
 
@@ -46,6 +46,6 @@ public class BalanceTest {
     public void use_포인트가_충분하면_포인트가_사용된다() {
         utt.charge(1L);
         utt.use(1L);
-        assertEquals(0L, utt.getBalance());
+        assertEquals(1L, utt.getBalance());
     }
 }
