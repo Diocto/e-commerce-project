@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -65,4 +67,21 @@ public class CouponControllerTest {
         ;
     }
 
+    @Test
+    void 쿠폰_동시에_100명의_유저가_쿠폰발급을_신청하면_100개까지만_성공한다() throws Exception {
+        IntStream.range(0, 100).forEach(i -> {
+            try {
+                mockMvc.perform(post("/coupons/"+ coupon1.getId() +"/users/"+ i))
+                        .andExpect(jsonPath("$.couponCreateRequestStatus").value("success"))
+                        .andExpect(jsonPath("$.createdUserCouponId").exists());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        mockMvc.perform(post("/coupons/"+ coupon1.getId() +"/users/101"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.code").value("BAD_STATE"))
+                .andExpect(jsonPath("$.message").value("이미 소진된 쿠폰입니다"));
+    }
 }
