@@ -44,9 +44,8 @@ dependencies {
 
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
-	implementation("org.redisson:redisson-spring-boot-starter:3.16.4")
 
-	// Test
+    // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
