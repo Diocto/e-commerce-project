@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 public class CouponControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -69,7 +68,7 @@ public class CouponControllerTest {
 
     @Test
     void 쿠폰_동시에_100명의_유저가_쿠폰발급을_신청하면_100개까지만_성공한다() throws Exception {
-        IntStream.range(0, 100).forEach(i -> {
+        IntStream.range(0, 100).parallel().forEach(i -> {
             try {
                 mockMvc.perform(post("/coupons/"+ coupon1.getId() +"/users/"+ i))
                         .andExpect(jsonPath("$.couponCreateRequestStatus").value("success"))
