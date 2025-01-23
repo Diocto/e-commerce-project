@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.integrationtest.interfaces.api.balance;
 
-import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.domain.balance.Balance;
 import kr.hhplus.be.server.domain.balance.IBalanceRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -10,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -106,12 +107,17 @@ public class BalanceControllerTest {
     }
 
     @Test
-    void 한_사용자가_동시에_10번_충전시_동시성이_보장된다() throws Exception {
+    void 한_사용자가_동시에_10번_충전시_동시성이_보장된다_낙관적락() throws Exception {
         Long userId = 1L;
+        AtomicReference<Long> succeedCount = new AtomicReference<>(0L);
         IntStream.range(1, 11).parallel().forEach(i -> {
             try {
-                mockMvc.perform(post("/balances").header("Authorization", "Bearer " + userId).contentType("application/json").content("{\"balance\":1000}"))
-                        .andExpect(status().isOk());
+                MvcResult result = mockMvc.perform(post("/balances").header("Authorization", "Bearer " + userId).contentType("application/json").content("{\"balance\":1000}"))
+                        .andReturn();
+                if(result.getResponse().getStatus() == 200) {
+                    succeedCount.getAndSet(succeedCount.get() + 1);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -120,6 +126,6 @@ public class BalanceControllerTest {
         // Verify the total balance for the user
         mockMvc.perform(get("/balances").header("Authorization", "Bearer " + userId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.balance").value(10000));
+                .andExpect(jsonPath("$.balance").value(succeedCount.get() * 1000));
     }
 }
