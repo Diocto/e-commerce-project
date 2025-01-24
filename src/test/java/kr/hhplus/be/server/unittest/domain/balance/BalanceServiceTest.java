@@ -29,6 +29,7 @@ public class BalanceServiceTest {
         MockitoAnnotations.initMocks(this);
 
         uut = new BalanceService(balanceRepositoryImpl);
+        balance = mock(Balance.class);
     }
 
     @Test
@@ -37,11 +38,11 @@ public class BalanceServiceTest {
         Long userId = 1L;
         Long point = 1L;
 
-        when(balanceRepositoryImpl.findByUserIdWithLock(userId)).thenReturn(Optional.of(balance));
+        when(balanceRepositoryImpl.findByUserId(userId)).thenReturn(Optional.of(balance));
         uut.charge(userId, point);
 
         // then
-        verify(balanceRepositoryImpl).findByUserIdWithLock(userId);
+        verify(balanceRepositoryImpl).findByUserId(userId);
         verify(balance).charge(point);
         verify(balanceRepositoryImpl).save(balance);
 
@@ -53,11 +54,11 @@ public class BalanceServiceTest {
         Long userId = 1L;
         Long point = 1L;
 
-        when(balanceRepositoryImpl.findByUserIdWithLock(userId)).thenReturn(Optional.of(balance));
+        when(balanceRepositoryImpl.findByUserId(userId)).thenReturn(Optional.of(balance));
         uut.use(userId, point);
 
         // then
-        verify(balanceRepositoryImpl).findByUserIdWithLock(userId);
+        verify(balanceRepositoryImpl).findByUserId(userId);
         verify(balance).use(point);
         verify(balanceRepositoryImpl).save(balance);
     }

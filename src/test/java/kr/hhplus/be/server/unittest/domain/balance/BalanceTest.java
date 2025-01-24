@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.BlockingDeque;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BalanceTest {
@@ -12,7 +14,7 @@ public class BalanceTest {
 
     @BeforeEach
     public void setUp() {
-        utt = new Balance(1L, 0L, 1L);
+        utt = Balance.builder().userId(1L).balance(1L).build();
     }
 
     @Test

@@ -16,7 +16,7 @@ public class BalanceService {
 
     @Transactional
     public Balance charge(Long userId, Long balance) {
-        Balance balanceEntity = balanceRepository.findByUserIdWithLock(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저의 포인트가 없습니다 : " + userId));
+        Balance balanceEntity = balanceRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저의 포인트가 없습니다 : " + userId));
         balanceEntity.charge(balance);
         balanceRepository.save(balanceEntity);
         return balanceEntity;
@@ -25,7 +25,7 @@ public class BalanceService {
     /// 주문서 결제 처리시 use 가 존재하기 때문에 service 에서는 use 함수가 존재한다.
     @Transactional
     public Balance use(Long userId, Long balance) {
-        Balance balanceEntity = balanceRepository.findByUserIdWithLock(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저의 포인트가 없습니다"));
+        Balance balanceEntity = balanceRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저의 포인트가 없습니다"));
         balanceEntity.use(balance);
         balanceRepository.save(balanceEntity);
         return balanceEntity;

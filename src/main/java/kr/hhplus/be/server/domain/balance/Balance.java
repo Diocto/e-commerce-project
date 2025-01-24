@@ -18,6 +18,8 @@ public class Balance {
     @Column(name = "user_id", unique = true)
     private Long userId;
     private Long balance;
+    @Version
+    private Long version;
     public void charge(Long balance) {
         if (balance < 0) {
             throw new IllegalArgumentException("충전할 포인트가 0보다 작습니다");
