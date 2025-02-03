@@ -28,4 +28,5 @@ public class CouponRepositoryImpl implements ICouponRepository {
     public Optional<Coupon> getByIdWithLock(Long id) {
         return couponJpaRepository.getCouponWithLock(id);
     }
+
 }
