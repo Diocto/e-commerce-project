@@ -39,7 +39,7 @@ public class CouponService {
     }
 
     public void requestCreateLimitedCoupon(Long userId, Long couponId) {
-        RScoredSortedSet<String> couponRequest = redissonClient.getScoredSortedSet("coupon_request:" + couponId);
+        RScoredSortedSet<String> couponRequest = redissonClient.getScoredSortedSet("coupon-request:" + couponId);
         if (couponRequest.contains(userId.toString())) {
             return;
         }

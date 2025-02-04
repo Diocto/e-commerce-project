@@ -40,7 +40,13 @@ public class CouponScheduler {
                     break;  // 더 이상 요청이 없으면 루프 종료
                 }
                 // 쿠폰 생성
-                couponService.createLimitedCoupon(Long.parseLong(userId), Long.parseLong(couponId));
+                try {
+                    couponService.createLimitedCoupon(Long.parseLong(userId), Long.parseLong(couponId));
+                    System.out.println("쿠폰 생성 성공 : " + userId);
+                } catch (Exception e) {
+                    // 쿠폰 생성 실패시 다시 요청
+                    System.out.println("쿠폰 생성 실패 : " + userId);
+                }
             }
         }
     }

@@ -46,8 +46,8 @@ public class CouponController {
     }
 
     @PostMapping("/v2/coupons/{couponId}/users/{userId}")
-    public ResponseEntity<?> issueLimitedCoupon(@RequestBody Request.CouponCreate requestBody) {
-        couponService.requestCreateLimitedCoupon(requestBody.userId(), requestBody.couponId());
+    public ResponseEntity<?> issueLimitedCoupon(@PathVariable Long userId, @PathVariable Long couponId) {
+        couponService.requestCreateLimitedCoupon(userId, couponId);
         return ResponseEntity.ok().build();
     }
 
