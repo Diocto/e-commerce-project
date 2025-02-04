@@ -33,4 +33,12 @@ public class CouponService {
         userCouponRepository.save(userCoupon);
         return userCoupon;
     }
+
+    public Long requestCreateLimitedCoupon(Long aLong, Long aLong1) {
+        return 0L;
+    }
+
+    public CouponCreateRequest getCouponCreateRequest(Long couponCreateRequestId) {
+        return null;
+    }
 }
