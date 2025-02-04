@@ -28,10 +28,6 @@ public class CouponController {
 
     public static class Response {
 
-        public record CouponCreate(
-                Long couponCreateRequestId
-        ) {
-        }
 
         public record CouponCreateView(
                 String couponCreateRequestStatus,
@@ -49,13 +45,13 @@ public class CouponController {
         ));
     }
 
-    @PostMapping("v2/coupons/{couponId}/users/{userId}")
-    public ResponseEntity<Response.CouponCreate> issueLimitedCoupon(@RequestBody Request.CouponCreate requestBody) {
-        Long couponCreateRequestId = couponService.requestCreateLimitedCoupon(requestBody.userId(), requestBody.couponId());
-        return ResponseEntity.ok(new Response.CouponCreate(couponCreateRequestId));
+    @PostMapping("/v2/coupons/{couponId}/users/{userId}")
+    public ResponseEntity<?> issueLimitedCoupon(@RequestBody Request.CouponCreate requestBody) {
+        couponService.requestCreateLimitedCoupon(requestBody.userId(), requestBody.couponId());
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/coupons/{coupon_create_request_id}")
+    @GetMapping("/coupons/{couponId}/users/{userId}/create_request")
     public ResponseEntity<Response.CouponCreateView> getCoupon(@PathVariable("coupon_create_request_id") Long couponCreateRequestId) {
         CouponCreateRequest couponCreateRequest = couponService.getCouponCreateRequest(couponCreateRequestId);
         Optional<UserCoupon> userCoupon = couponService.getUserCoupon(couponCreateRequest.createdUserCouponId());
