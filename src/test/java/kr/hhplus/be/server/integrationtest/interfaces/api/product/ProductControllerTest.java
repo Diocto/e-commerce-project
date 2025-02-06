@@ -131,7 +131,26 @@ public class ProductControllerTest {
         mockMvc.perform(get("/products/popular")
                         .queryParam("page", "0")
                         .queryParam("size", "3"))
-        /// then
+                /// then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.productViewList[0].id").value(initProduct2.getId()))
+                .andExpect(jsonPath("$.productViewList[0].productName").value("product2"))
+                .andExpect(jsonPath("$.productViewList[0].price").value(2000))
+                .andExpect(jsonPath("$.productViewList[0].stockQuantity").value(10))
+                .andExpect(jsonPath("$.productViewList[1].id").value(initProduct3.getId()))
+                .andExpect(jsonPath("$.productViewList[1].productName").value("product3"))
+                .andExpect(jsonPath("$.productViewList[1].price").value(3000))
+                .andExpect(jsonPath("$.productViewList[1].stockQuantity").value(25))
+                .andExpect(jsonPath("$.productViewList[2].id").value(initProduct1.getId()))
+                .andExpect(jsonPath("$.productViewList[2].productName").value("product1"))
+                .andExpect(jsonPath("$.productViewList[2].price").value(1000))
+                .andExpect(jsonPath("$.productViewList[2].stockQuantity").value(7))
+        ;
+
+        mockMvc.perform(get("/products/popular")
+                        .queryParam("page", "0")
+                        .queryParam("size", "3"))
+                /// then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productViewList[0].id").value(initProduct2.getId()))
                 .andExpect(jsonPath("$.productViewList[0].productName").value("product2"))

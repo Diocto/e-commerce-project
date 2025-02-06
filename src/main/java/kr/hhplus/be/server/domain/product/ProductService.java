@@ -14,7 +14,7 @@ public class ProductService {
         this.productRepositoryImpl = productRepositoryImpl;
     }
 
-    public List<ProductQuantityDto> getPopularProducts(Integer page, Integer size) {
+    public PopularProducts getPopularProducts(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         List<ProductQuantityDto> result = productRepositoryImpl.getPopularProducts(pageable);
         if ( result.isEmpty() ){
@@ -22,6 +22,7 @@ public class ProductService {
                     product -> new ProductQuantityDto(product, 0L)
             ).toList();
         }
-        return result;
+        PopularProducts popularProducts = new PopularProducts(result);
+        return popularProducts;
     }
 }

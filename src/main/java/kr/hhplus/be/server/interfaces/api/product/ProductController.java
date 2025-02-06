@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.interfaces.api.product;
 
+import kr.hhplus.be.server.domain.product.PopularProducts;
 import kr.hhplus.be.server.domain.product.ProductQuantityDto;
 import kr.hhplus.be.server.domain.product.ProductUseCase;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +40,10 @@ public class ProductController {
     public ResponseEntity<Response.ProductViewList> getProducts(
             @RequestParam Integer page,
             @RequestParam Integer size) {
-        List<ProductQuantityDto> products = productUseCase.getPopularProducts(page, size);
+        PopularProducts products = productUseCase.getPopularProducts(page, size);
+
         return ResponseEntity.ok(new Response.ProductViewList(
-                products.stream()
+                products.popularProducts().stream()
                 .map(productQuantityDto -> new Response.ProductView(
                         productQuantityDto.product().getId(),
                         productQuantityDto.product().getName(),
