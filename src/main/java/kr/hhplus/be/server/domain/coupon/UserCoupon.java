@@ -19,6 +19,6 @@ public class UserCoupon {
     private Long userId;
 
     @ManyToOne
-    @JoinColumn(name = "coupon_id", insertable = false, updatable = false)
+    @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 }

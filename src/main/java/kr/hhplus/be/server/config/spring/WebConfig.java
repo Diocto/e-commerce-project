@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.config;
+package kr.hhplus.be.server.config.spring;
 
 import kr.hhplus.be.server.interfaces.resolver.UserInfoArgumentResolver;
 import org.springframework.context.annotation.Configuration;

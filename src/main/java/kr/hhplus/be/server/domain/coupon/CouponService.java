@@ -2,7 +2,9 @@ package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.annotation.RedisLock;
+import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,10 +13,12 @@ import java.util.Optional;
 public class CouponService {
     private final ICouponRepository couponRepository;
     private final IUserCouponRepository userCouponRepository;
+    private final RedissonClient redissonClient;
 
     public CouponService(ICouponRepository couponRepository, IUserCouponRepository userCouponRepository, RedissonClient redissonClient) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
+        this.redissonClient = redissonClient;
     }
 
     public Optional<UserCoupon> getUserCoupon(Long id){
@@ -32,5 +36,17 @@ public class CouponService {
         UserCoupon userCoupon = coupon.issueCoupon(userId);
         userCouponRepository.save(userCoupon);
         return userCoupon;
+    }
+
+    public void requestCreateLimitedCoupon(Long userId, Long couponId) {
+        RScoredSortedSet<String> couponRequest = redissonClient.getScoredSortedSet("coupon-request:" + couponId);
+        if (couponRequest.contains(userId.toString())) {
+            return;
+        }
+        couponRequest.add(System.currentTimeMillis(), userId.toString());
+    }
+
+    public CouponCreateRequest getCouponCreateRequest(Long couponCreateRequestId) {
+        return null;
     }
 }

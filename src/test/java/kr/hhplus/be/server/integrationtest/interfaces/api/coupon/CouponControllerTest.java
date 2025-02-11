@@ -1,9 +1,6 @@
 package kr.hhplus.be.server.integrationtest.interfaces.api.coupon;
 
-import jakarta.transaction.Transactional;
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.ICouponRepository;
-import org.junit.jupiter.api.BeforeAll;
+import kr.hhplus.be.server.domain.coupon.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +24,12 @@ public class CouponControllerTest {
 
     @Autowired
     ICouponRepository couponRepository;
+
+    @Autowired
+    IUserCouponRepository userCouponRepository;
+
+    @Autowired
+    CouponScheduler couponScheduler;
 
     /// Test data
     Coupon coupon1;
@@ -82,5 +86,54 @@ public class CouponControllerTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.code").value("BAD_STATE"))
                 .andExpect(jsonPath("$.message").value("이미 소진된 쿠폰입니다"));
+    }
+
+    @Test
+    void 한정판쿠폰_v2_동시애_100명의_유저가_쿠폰발급을_신청하면_100개까지만_성공한다() throws Exception {
+        IntStream.range(0, 100).parallel().forEach(i -> {
+            try {
+                mockMvc.perform(post("/v2/coupons/"+ coupon1.getId() +"/users/"+ i))
+                        .andExpect(status().isOk());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        /// 쿠폰 발급 처리
+        couponScheduler.processLimitedCouponRequest();
+
+        /// 100개의 쿠폰이 100명에게 발급되었는지 repository 를 이용하여 for문을 돌면서 확인
+        LongStream.range(0, 100).forEach(i -> {
+            UserCoupon userCoupon = userCouponRepository.findByUserIdAndCoupon(i, coupon1).orElseThrow();
+        });
+
+        /// 101번째 유저는 쿠폰이 발급되면 안됨
+        mockMvc.perform(post("/v2/coupons/"+ coupon1.getId() +"/users/101"))
+                .andExpect(status().isOk());
+        couponScheduler.processLimitedCouponRequest();
+        assertThrows(Exception.class, () -> userCouponRepository.findByUserIdAndCoupon(101L, coupon1).orElseThrow());
+    }
+
+    @Test
+    void 한정판쿠폰_v2_200명의_유저가_쿠폰발급을_신청하면_순서대로만_성공한다() throws Exception {
+        for (int i = 0; i < 200; i++) {
+            try {
+                mockMvc.perform(post("/v2/coupons/"+ coupon1.getId() +"/users/"+ i))
+                        .andExpect(status().isOk());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+
+        /// 쿠폰 발급 처리
+        couponScheduler.processLimitedCouponRequest();
+
+        LongStream.range(0, 100).forEach(i -> {
+            userCouponRepository.findByUserIdAndCoupon(i, coupon1).orElseThrow();
+        });
+
+        LongStream.range(100, 200).forEach(i -> {
+            assertThrows(Exception.class, () -> userCouponRepository.findByUserIdAndCoupon(i, coupon1).orElseThrow());
+        });
     }
 }

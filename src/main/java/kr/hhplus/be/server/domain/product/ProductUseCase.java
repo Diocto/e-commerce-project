@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +15,8 @@ public class ProductUseCase {
         this.productService = productService;
     }
 
-    public List<ProductQuantityDto> getPopularProducts(Integer page, Integer size) {
+    @Cacheable(value = "popularProductCache", key = "#page + '_' + #size", cacheManager = "redissonCacheManager")
+    public PopularProducts getPopularProducts(Integer page, Integer size) {
         return productService.getPopularProducts(page, size);
     }
 }
