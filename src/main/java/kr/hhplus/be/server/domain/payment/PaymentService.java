@@ -9,6 +9,7 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderProduct;
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.interfaces.event.payment.PaymentDataPlatformSendEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -18,11 +19,13 @@ public class PaymentService {
     private final IProductRepository productRepository;
     private final IBalanceRepository balanceRepository;
     private final IOrderRepository orderRepository;
+    private final PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher;
 
-    public PaymentService(IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository) {
+    public PaymentService(IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository, PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher) {
         this.productRepository = productRepository;
         this.balanceRepository = balanceRepository;
         this.orderRepository = orderRepository;
+        this.paymentDataPlatformSendEventPublisher = paymentDataPlatformSendEventPublisher;
     }
 
     @Transactional
@@ -43,6 +46,6 @@ public class PaymentService {
         balanceRepository.save(balance);
         productRepository.saveAll(productMap.values().stream().toList());
 
-        DataCenterClient.sendData(order.toString());
+        paymentDataPlatformSendEventPublisher.publish(userId, order.getId(), order.getAmount());
     }
 }
