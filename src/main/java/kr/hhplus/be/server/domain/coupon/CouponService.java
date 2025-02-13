@@ -33,6 +33,9 @@ public class CouponService {
     @Transactional
     public UserCoupon createLimitedCoupon(Long userId, Long couponId) {
         Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰 id 입니다."));
+        userCouponRepository.findByUserIdAndCoupon(userId, coupon).ifPresent(userCoupon -> {
+            throw new IllegalArgumentException("이미 발급된 쿠폰이 있습니다.");
+        });
         UserCoupon userCoupon = coupon.issueCoupon(userId);
         userCouponRepository.save(userCoupon);
         return userCoupon;
