@@ -10,6 +10,7 @@ import kr.hhplus.be.server.domain.order.OrderProduct;
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.interfaces.event.payment.PaymentDataPlatformSendEventPublisher;
+import kr.hhplus.be.server.interfaces.kafka.dataplatform.PaymentDataPlatformProducer;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -20,12 +21,14 @@ public class PaymentService {
     private final IBalanceRepository balanceRepository;
     private final IOrderRepository orderRepository;
     private final PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher;
+    private final PaymentDataPlatformProducer paymentDataPlatformProducer;
 
-    public PaymentService(IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository, PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher) {
+    public PaymentService(IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository, PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher, PaymentDataPlatformProducer paymentDataPlatformProducer) {
         this.productRepository = productRepository;
         this.balanceRepository = balanceRepository;
         this.orderRepository = orderRepository;
         this.paymentDataPlatformSendEventPublisher = paymentDataPlatformSendEventPublisher;
+        this.paymentDataPlatformProducer = paymentDataPlatformProducer;
     }
 
     @Transactional
@@ -46,6 +49,6 @@ public class PaymentService {
         balanceRepository.save(balance);
         productRepository.saveAll(productMap.values().stream().toList());
 
-        paymentDataPlatformSendEventPublisher.publish(userId, order.getId(), order.getAmount());
+        paymentDataPlatformProducer.publishPaymentCompleteEvent(userId + "_" + order.getId() + "_" + "_" + order.getAmount());
     }
 }
