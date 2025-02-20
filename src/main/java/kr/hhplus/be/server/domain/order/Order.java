@@ -32,6 +32,9 @@ public class Order {
         if (!this.userId.equals(userId)){
             throw new IllegalArgumentException("주문자가 일치하지 않습니다");
         }
+        if (this.status != OrderStatus.PENDING){
+            throw new IllegalArgumentException("주문 상태가 PENDING이 아닙니다");
+        }
     }
 
     public enum OrderStatus{
