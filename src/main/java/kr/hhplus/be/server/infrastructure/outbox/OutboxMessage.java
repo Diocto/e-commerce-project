@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Builder
@@ -20,7 +19,7 @@ public class OutboxMessage {
     private String aggregateType;
     private String payload;
     private String topic;
-    private String key_value;
+    private String keyValue;
     private OutboxMessageStatus status;
     private String result;
     private int retryCount;

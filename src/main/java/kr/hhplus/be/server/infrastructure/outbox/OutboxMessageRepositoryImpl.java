@@ -23,6 +23,11 @@ public class OutboxMessageRepositoryImpl implements OutboxMessageRepository{
     }
 
     @Override
+    public OutboxMessage findByKey(String key) {
+        return outboxMessageJpaRepository.findByKeyValue(key).orElse(null);
+    }
+
+    @Override
     public void delete(OutboxMessage outboxMessage) {
         outboxMessageJpaRepository.delete(outboxMessage);
     }
