@@ -25,4 +25,8 @@ public class ProductService {
         PopularProducts popularProducts = new PopularProducts(result);
         return popularProducts;
     }
+
+    public Product createProduct(ProductQuantityDto productQuantityDto) {
+        return productRepositoryImpl.createProduct(productQuantityDto);
+    }
 }

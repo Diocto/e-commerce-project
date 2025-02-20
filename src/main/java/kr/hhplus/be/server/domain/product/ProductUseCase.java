@@ -19,4 +19,8 @@ public class ProductUseCase {
     public PopularProducts getPopularProducts(Integer page, Integer size) {
         return productService.getPopularProducts(page, size);
     }
+
+    public Product createProduct(ProductQuantityDto productQuantityDto) {
+        return productService.createProduct(productQuantityDto);
+    }
 }

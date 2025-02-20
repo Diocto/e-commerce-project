@@ -65,8 +65,8 @@ public class OrderService {public static class Command{
                 .toList();
 
         Order order = Order.create(command.userId, productQuantityList, command.userCoupon);
-        order.getOrderProducts().forEach(orderProductRepository::save);
         orderRepository.save(order);
+        order.getOrderProducts().forEach(orderProductRepository::save);
 
         return order;
     }
