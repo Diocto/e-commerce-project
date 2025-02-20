@@ -4,10 +4,7 @@ import kr.hhplus.be.server.domain.product.PopularProducts;
 import kr.hhplus.be.server.domain.product.ProductQuantityDto;
 import kr.hhplus.be.server.domain.product.ProductUseCase;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,5 +49,16 @@ public class ProductController {
                         productQuantityDto.product().getStock()
                 ))
                 .toList()));
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<Response.ProductView> createProduct(@RequestBody ProductQuantityDto productQuantityDto) {
+        return ResponseEntity.ok(new Response.ProductView(
+                productUseCase.createProduct(productQuantityDto).getId(),
+                productQuantityDto.product().getName(),
+                productQuantityDto.product().getPrice(),
+                productQuantityDto.product().getDescription(),
+                productQuantityDto.product().getStock()
+        ));
     }
 }

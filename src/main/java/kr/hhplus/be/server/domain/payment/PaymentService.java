@@ -9,7 +9,11 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderProduct;
 import kr.hhplus.be.server.domain.product.IProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.infrastructure.outbox.OutboxMessage;
+import kr.hhplus.be.server.infrastructure.outbox.OutboxMessageRepository;
+import kr.hhplus.be.server.infrastructure.outbox.OutboxMessageStatus;
 import kr.hhplus.be.server.interfaces.event.payment.PaymentDataPlatformSendEventPublisher;
+import kr.hhplus.be.server.interfaces.kafka.dataplatform.PaymentDataPlatformProducer;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -21,11 +25,11 @@ public class PaymentService {
     private final IOrderRepository orderRepository;
     private final PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher;
 
-    public PaymentService(IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository, PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher) {
+    public PaymentService(IProductRepository productRepository, IBalanceRepository balanceRepository, IOrderRepository orderRepository, PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher, PaymentDataPlatformProducer paymentDataPlatformProducer, OutboxMessageRepository outboxMessageRepository, PaymentDataPlatformSendEventPublisher paymentDataPlatformSendEventPublisher1) {
         this.productRepository = productRepository;
         this.balanceRepository = balanceRepository;
         this.orderRepository = orderRepository;
-        this.paymentDataPlatformSendEventPublisher = paymentDataPlatformSendEventPublisher;
+        this.paymentDataPlatformSendEventPublisher = paymentDataPlatformSendEventPublisher1;
     }
 
     @Transactional
