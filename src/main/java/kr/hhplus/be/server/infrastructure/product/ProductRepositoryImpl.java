@@ -48,4 +48,14 @@ public class ProductRepositoryImpl implements IProductRepository {
     public Map<Long, Product> getProductsWithLock(List<Long> list) {
         return productJpaRepository.findAllByIdWithLock(list).stream().collect(Collectors.toMap(Product::getId, Function.identity()));
     }
+
+    @Override
+    public Product createProduct(ProductQuantityDto productQuantityDto) {
+        Product product = Product.builder()
+                .name(productQuantityDto.product().getName())
+                .price(productQuantityDto.product().getPrice())
+                .stock(productQuantityDto.totalQuantity())
+                .build();
+        return productJpaRepository.save(product);
+    }
 }

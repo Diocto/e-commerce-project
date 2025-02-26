@@ -14,9 +14,9 @@ spring:
       max-lifetime: 60000
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    open-in-view: false
+    open-in-vi  ew: false
     generate-ddl: false
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
 
@@ -24,6 +24,23 @@ spring:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+  redis:
+    host: localhost
+    port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: paymnet-dataplatform-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+kafka:
+  topic:
+    data-platform: data-platform-topic
 
 springdoc:
   api-docs:
@@ -43,3 +60,9 @@ spring:
     username: application
     password: application
 
+  jpa:
+    open-in-view: false
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update

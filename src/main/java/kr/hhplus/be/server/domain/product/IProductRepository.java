@@ -12,4 +12,6 @@ public interface IProductRepository {
     Product save(Product product);
     void saveAll(List<Product> products);
     Map<Long, Product> getProductsWithLock(List<Long> list);
+
+    Product createProduct(ProductQuantityDto productQuantityDto);
 }
