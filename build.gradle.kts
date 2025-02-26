@@ -60,3 +60,11 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("user.timezone", "UTC")
 }
+
+tasks.withType<Jar> {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named<Jar>("jar") {
+	enabled = false // ❌ 기본 JAR 생성 비활성화
+}

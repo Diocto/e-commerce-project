@@ -1,8 +1,33 @@
-version: '3'
+version: '3.8'
+
 services:
+  # ✅ Spring Boot 애플리케이션
+  app:
+    build: .
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy  # ✅ MySQL이 정상적으로 실행될 때까지 대기
+      redis:
+        condition: service_healthy  # ✅ Redis가 정상적으로 실행될 때까지 대기
+      kafka:
+        condition: service_started  # ✅ Kafka 컨테이너가 시작될 때까지 대기
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hhplus
+      - SPRING_DATASOURCE_USERNAME=application
+      - SPRING_DATASOURCE_PASSWORD=application
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - my_network
+
+  # ✅ MySQL 데이터베이스
   mysql:
     image: mysql:8.0
-    #image: index-test-mysql:1.0
+    container_name: mysql-db
     ports:
       - "3306:3306"
     environment:
@@ -10,39 +35,60 @@ services:
       - MYSQL_USER=application
       - MYSQL_PASSWORD=application
       - MYSQL_DATABASE=hhplus
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+    networks:
+      - my_network
 
+  # ✅ Redis 캐시
   redis:
     image: redis:6.0
+    container_name: redis-cache
     ports:
       - "6379:6379"
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PASSWORD=redis
-      - REDIS_DATABASE=0
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 5
+      timeout: 3s
+    networks:
+      - my_network
+
+  # ✅ Zookeeper (Kafka를 위한 필수 서비스)
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    container_name: kafka-zookeeper
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
     ports:
       - "2181:2181"
+    networks:
+      - my_network
 
+  # ✅ Kafka 메시지 브로커
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: kafka-broker
     depends_on:
       - zookeeper
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     ports:
       - "9092:9092"
-
+    networks:
+      - my_network
 
 volumes:
   kafka_data:
-networks:
-  default:
-    driver: bridge
 
+# ✅ 모든 컨테이너가 같은 네트워크를 사용하도록 설정
+networks:
+  my_network:
+    driver: bridge
